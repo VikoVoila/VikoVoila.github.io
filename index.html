@@ -1,1266 +1,817 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vivek Kumar — Engineer · Builder · Founder</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --navy: #0A0F1E;
-    --navy-card: #111827;
-    --navy-light: #1A2235;
-    --cyan: #00D9FF;
-    --violet: #7B61FF;
-    --violet-dim: rgba(123, 97, 255, 0.15);
-    --cyan-dim: rgba(0, 217, 255, 0.1);
-    --ice: #F0F4FF;
-    --muted: #8892A4;
-    --border: rgba(255,255,255,0.07);
-  }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--navy);
-    color: var(--ice);
-    font-family: 'Inter', sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
-
-  /* ── CANVAS BACKGROUND ── */
-  #canvas-bg {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 0;
-    opacity: 0.35;
-  }
-
-  /* ── NAV ── */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 60px;
-    background: rgba(10, 15, 30, 0.85);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .nav-logo {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
-    color: var(--cyan);
-    letter-spacing: 0.05em;
-  }
-
-  .nav-logo span { color: var(--muted); }
-
-  .nav-links {
-    display: flex;
-    gap: 36px;
-    list-style: none;
-  }
-
-  .nav-links a {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--muted);
-    text-decoration: none;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    transition: color 0.2s;
-  }
-
-  .nav-links a:hover { color: var(--cyan); }
-
-  .nav-cta {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--cyan);
-    text-decoration: none;
-    border: 1px solid rgba(0, 217, 255, 0.4);
-    padding: 8px 18px;
-    border-radius: 4px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    transition: all 0.2s;
-  }
-
-  .nav-cta:hover {
-    background: rgba(0, 217, 255, 0.08);
-    border-color: var(--cyan);
-  }
-
-  /* ── SECTIONS WRAPPER ── */
-  main { position: relative; z-index: 1; }
-
-  section { position: relative; }
-
-  /* ── HERO ── */
-  #hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 120px 60px 80px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .hero-eyebrow {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--cyan);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 28px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .hero-eyebrow::before {
-    content: '';
-    display: inline-block;
-    width: 32px;
-    height: 1px;
-    background: var(--cyan);
-  }
-
-  .hero-headline {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(48px, 7vw, 92px);
-    font-weight: 700;
-    line-height: 1.0;
-    letter-spacing: -0.03em;
-    margin-bottom: 12px;
-  }
-
-  .hero-headline .line-muted {
-    color: var(--muted);
-    font-weight: 300;
-  }
-
-  .hero-headline .line-accent { color: var(--cyan); }
-
-  .terminal-line {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(16px, 2.5vw, 24px);
-    color: var(--violet);
-    margin-top: 20px;
-    margin-bottom: 36px;
-    min-height: 36px;
-  }
-
-  .cursor {
-    display: inline-block;
-    width: 2px;
-    height: 1em;
-    background: var(--cyan);
-    vertical-align: middle;
-    margin-left: 2px;
-    animation: blink 1s step-end infinite;
-  }
-
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-
-  .hero-desc {
-    max-width: 560px;
-    color: var(--muted);
-    font-size: 17px;
-    line-height: 1.75;
-    margin-bottom: 48px;
-  }
-
-  .hero-actions {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .btn-primary {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 600;
-    font-size: 14px;
-    letter-spacing: 0.04em;
-    background: linear-gradient(135deg, var(--cyan), var(--violet));
-    color: var(--navy);
-    border: none;
-    padding: 14px 32px;
-    border-radius: 6px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: opacity 0.2s, transform 0.2s;
-  }
-
-  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
-
-  .btn-ghost {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 500;
-    font-size: 14px;
-    letter-spacing: 0.04em;
-    background: transparent;
-    color: var(--ice);
-    border: 1px solid var(--border);
-    padding: 14px 32px;
-    border-radius: 6px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: border-color 0.2s, background 0.2s;
-  }
-
-  .btn-ghost:hover {
-    border-color: rgba(255,255,255,0.25);
-    background: rgba(255,255,255,0.03);
-  }
-
-  .hero-stats {
-    display: flex;
-    gap: 48px;
-    margin-top: 80px;
-    padding-top: 40px;
-    border-top: 1px solid var(--border);
-    flex-wrap: wrap;
-  }
-
-  .stat-item { display: flex; flex-direction: column; gap: 4px; }
-
-  .stat-num {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 36px;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--cyan), var(--violet));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .stat-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  /* ── SECTION SHARED STYLES ── */
-  .section-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 100px 60px;
-  }
-
-  .section-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--cyan);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .section-label::after {
-    content: '';
-    flex: 1;
-    max-width: 60px;
-    height: 1px;
-    background: var(--cyan);
-    opacity: 0.5;
-  }
-
-  .section-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(28px, 4vw, 48px);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    margin-bottom: 56px;
-  }
-
-  .section-title em {
-    font-style: normal;
-    color: var(--cyan);
-  }
-
-  /* ── DUALITY SECTION ── */
-  #duality { background: linear-gradient(180deg, var(--navy) 0%, #0d1226 100%); }
-
-  .duality-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-
-  .duality-card {
-    padding: 52px 44px;
-    background: var(--navy-card);
-    transition: background 0.3s;
-  }
-
-  .duality-card:hover { background: var(--navy-light); }
-
-  .duality-card:first-child { border-right: 1px solid var(--border); }
-
-  .duality-icon {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--cyan);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 24px;
-    padding: 6px 12px;
-    border: 1px solid rgba(0,217,255,0.25);
-    display: inline-block;
-    border-radius: 3px;
-  }
-
-  .duality-card:last-child .duality-icon {
-    color: var(--violet);
-    border-color: rgba(123,97,255,0.3);
-  }
-
-  .duality-card h3 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 26px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    letter-spacing: -0.02em;
-  }
-
-  .duality-card p {
-    color: var(--muted);
-    font-size: 15px;
-    line-height: 1.8;
-    margin-bottom: 32px;
-  }
-
-  .tag-cluster { display: flex; flex-wrap: wrap; gap: 8px; }
-
-  .tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    padding: 5px 11px;
-    border-radius: 4px;
-    letter-spacing: 0.05em;
-  }
-
-  .tag-cyan { background: var(--cyan-dim); color: var(--cyan); border: 1px solid rgba(0,217,255,0.2); }
-  .tag-violet { background: var(--violet-dim); color: #a48fff; border: 1px solid rgba(123,97,255,0.25); }
-
-  /* ── FOCUS AREAS ── */
-  #focus { background: #0d1226; }
-
-  .focus-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-
-  .focus-card {
-    background: var(--navy-card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 36px 32px;
-    transition: border-color 0.3s, transform 0.3s;
-    cursor: default;
-  }
-
-  .focus-card:hover {
-    border-color: rgba(0, 217, 255, 0.3);
-    transform: translateY(-4px);
-  }
-
-  .focus-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-    margin-bottom: 20px;
-  }
-
-  .focus-card h4 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 12px;
-    letter-spacing: -0.01em;
-  }
-
-  .focus-card p { color: var(--muted); font-size: 14px; line-height: 1.75; }
-
-  .focus-dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--cyan);
-    margin-right: 8px;
-    vertical-align: middle;
-  }
-
-  /* ── PROJECTS ── */
-  #projects { background: var(--navy); }
-
-  .projects-list { display: flex; flex-direction: column; gap: 2px; }
-
-  .project-row {
-    display: grid;
-    grid-template-columns: 48px 1fr auto;
-    align-items: center;
-    gap: 32px;
-    padding: 28px 32px;
-    background: var(--navy-card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    transition: background 0.25s, border-color 0.25s;
-    cursor: default;
-  }
-
-  .project-row:hover {
-    background: var(--navy-light);
-    border-color: rgba(0,217,255,0.2);
-  }
-
-  .project-idx {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    color: var(--muted);
-  }
-
-  .project-info h4 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    margin-bottom: 4px;
-  }
-
-  .project-info p { color: var(--muted); font-size: 14px; }
-
-  .project-badges { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
-
-  .badge {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 3px;
-  }
-
-  .badge-cyan { background: var(--cyan-dim); color: var(--cyan); }
-  .badge-violet { background: var(--violet-dim); color: #a48fff; }
-  .badge-green { background: rgba(0,255,160,0.08); color: #00ffa0; }
-  .badge-orange { background: rgba(255,160,0,0.08); color: #ffab40; }
-
-  /* ── VISION ── */
-  #vision {
-    background: linear-gradient(135deg, #0d1226 0%, #0e0d1f 100%);
-    overflow: hidden;
-  }
-
-  .vision-layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
-  }
-
-  .vision-left h2 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(28px, 4vw, 44px);
-    font-weight: 700;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    margin-bottom: 24px;
-  }
-
-  .vision-left h2 em {
-    font-style: normal;
-    background: linear-gradient(135deg, var(--cyan), var(--violet));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .vision-left p {
-    color: var(--muted);
-    font-size: 16px;
-    line-height: 1.8;
-    margin-bottom: 16px;
-  }
-
-  .vision-pillars { display: flex; flex-direction: column; gap: 16px; }
-
-  .pillar {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 20px 24px;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    transition: border-color 0.25s;
-  }
-
-  .pillar:hover { border-color: rgba(123,97,255,0.35); }
-
-  .pillar-icon {
-    font-size: 20px;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-
-  .pillar-text h5 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-
-  .pillar-text p { color: var(--muted); font-size: 13px; line-height: 1.6; }
-
-  /* ── STACK ── */
-  #stack { background: #0d1226; }
-
-  .stack-groups { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
-
-  .stack-group {
-    background: var(--navy-card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 32px;
-  }
-
-  .stack-group-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    margin-bottom: 20px;
-  }
-
-  .skill-bars { display: flex; flex-direction: column; gap: 14px; }
-
-  .skill-bar-item { display: flex; flex-direction: column; gap: 6px; }
-
-  .skill-bar-label {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .skill-name {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-  }
-
-  .skill-pct {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-  }
-
-  .skill-track {
-    height: 3px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .skill-fill {
-    height: 100%;
-    border-radius: 2px;
-    background: linear-gradient(90deg, var(--cyan), var(--violet));
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .skill-fill.animated { transform: scaleX(1); }
-
-  /* ── CONTACT ── */
-  #contact { background: var(--navy); }
-
-  .contact-layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: start;
-  }
-
-  .contact-left h2 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(28px, 3.5vw, 42px);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
-    margin-bottom: 20px;
-  }
-
-  .contact-left p { color: var(--muted); font-size: 16px; line-height: 1.8; margin-bottom: 32px; }
-
-  .contact-links { display: flex; flex-direction: column; gap: 12px; }
-
-  .contact-link {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 20px;
-    background: var(--navy-card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    text-decoration: none;
-    color: var(--ice);
-    font-size: 14px;
-    transition: border-color 0.2s, background 0.2s;
-  }
-
-  .contact-link:hover {
-    border-color: rgba(0,217,255,0.3);
-    background: var(--navy-light);
-  }
-
-  .contact-link-icon {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--cyan);
-    width: 20px;
-    text-align: center;
-  }
-
-  .contact-form-note {
-    background: linear-gradient(135deg, rgba(0,217,255,0.06), rgba(123,97,255,0.06));
-    border: 1px solid rgba(0,217,255,0.15);
-    border-radius: 10px;
-    padding: 36px;
-  }
-
-  .contact-form-note h4 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 12px;
-  }
-
-  .contact-form-note p { color: var(--muted); font-size: 14px; line-height: 1.75; margin-bottom: 24px; }
-
-  .interests-list { display: flex; flex-wrap: wrap; gap: 8px; }
-
-  /* ── FOOTER ── */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 28px 60px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .footer-left {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--muted);
-  }
-
-  .footer-right {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    display: flex;
-    gap: 24px;
-  }
-
-  .footer-right a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
-  .footer-right a:hover { color: var(--cyan); }
-
-  /* ── SCROLL ANIMATIONS ── */
-  .reveal {
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-
-  .reveal.visible {
-    opacity: 1;
-    transform: none;
-  }
-
-  /* ── MOBILE ── */
-  @media (max-width: 768px) {
-    nav { padding: 16px 24px; }
-    .nav-links { display: none; }
-    #hero, .section-inner { padding-left: 24px; padding-right: 24px; }
-    .duality-grid { grid-template-columns: 1fr; }
-    .duality-card:first-child { border-right: none; border-bottom: 1px solid var(--border); }
-    .focus-grid { grid-template-columns: 1fr; }
-    .vision-layout, .contact-layout, .stack-groups { grid-template-columns: 1fr; gap: 40px; }
-    .project-row { grid-template-columns: 1fr; gap: 12px; }
-    .project-badges { justify-content: flex-start; }
-    .hero-stats { gap: 28px; }
-    footer { flex-direction: column; gap: 16px; text-align: center; padding: 24px; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .cursor { animation: none; opacity: 1; }
-    .skill-fill { transition: none; }
-    .reveal { opacity: 1; transform: none; transition: none; }
-  }
-</style>
-</head>
-<body>
-
-<canvas id="canvas-bg"></canvas>
-
-<nav>
-  <div class="nav-logo">VK<span>.dev</span></div>
-  <ul class="nav-links">
-    <li><a href="#duality">About</a></li>
-    <li><a href="#focus">Focus</a></li>
-    <li><a href="#projects">Work</a></li>
-    <li><a href="#vision">Vision</a></li>
-    <li><a href="#stack">Stack</a></li>
-  </ul>
-  <a href="#contact" class="nav-cta">Let's Talk</a>
-</nav>
-
-<main>
-
-  <!-- HERO -->
-  <section id="hero">
-    <div class="hero-eyebrow">Available for collaboration</div>
-    <h1 class="hero-headline">
-      <div>Vivek Kumar</div>
-      <div class="line-muted">builds systems</div>
-      <div class="line-accent">& businesses.</div>
-    </h1>
-    <div class="terminal-line">
-      <span id="typed-text"></span><span class="cursor"></span>
-    </div>
-    <p class="hero-desc">
-      Senior software engineer with 5+ years in Java & Spring Boot — and a product builder who researches markets, identifies real pain points, and ships SaaS products that grow into businesses.
-    </p>
-    <div class="hero-actions">
-      <a href="#projects" class="btn-primary">View My Work</a>
-      <a href="#contact" class="btn-ghost">Start a Conversation</a>
-    </div>
-    <div class="hero-stats">
-      <div class="stat-item">
-        <span class="stat-num">5+</span>
-        <span class="stat-label">Years Backend Dev</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num">12+</span>
-        <span class="stat-label">APIs Designed</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num">4</span>
-        <span class="stat-label">SaaS Concepts Built</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num">∞</span>
-        <span class="stat-label">Market Problems Found</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- DUALITY -->
-  <section id="duality">
-    <div class="section-inner">
-      <div class="section-label">The Duality</div>
-      <h2 class="section-title">Engineer meets <em>Entrepreneur.</em></h2>
-      <div class="duality-grid reveal">
-        <div class="duality-card">
-          <div class="duality-icon">// engineer</div>
-          <h3>I architect systems that scale.</h3>
-          <p>From REST API design to database normalization, I build backend infrastructure that's clean, performant, and maintainable — with Java & Spring Boot as my core, PostgreSQL as my foundation.</p>
-          <div class="tag-cluster">
-            <span class="tag tag-cyan">Java</span>
-            <span class="tag tag-cyan">Spring Boot</span>
-            <span class="tag tag-cyan">PostgreSQL</span>
-            <span class="tag tag-cyan">REST APIs</span>
-            <span class="tag tag-cyan">Microservices</span>
-            <span class="tag tag-cyan">System Design</span>
-          </div>
-        </div>
-        <div class="duality-card">
-          <div class="duality-icon">// builder</div>
-          <h3>I identify markets before they peak.</h3>
-          <p>Beyond code, I research customer pain points, validate business models, and build products from concept to paying users — targeting SaaS, fintech, govtech, and India's underserved segments.</p>
-          <div class="tag-cluster">
-            <span class="tag tag-violet">SaaS Products</span>
-            <span class="tag tag-violet">Market Research</span>
-            <span class="tag tag-violet">MVP Strategy</span>
-            <span class="tag tag-violet">Compliance Tech</span>
-            <span class="tag tag-violet">AI-Enabled Apps</span>
-            <span class="tag tag-violet">India GTM</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOCUS AREAS -->
-  <section id="focus">
-    <div class="section-inner">
-      <div class="section-label">Where I Play</div>
-      <h2 class="section-title">Six domains I'm <em>obsessed</em> with.</h2>
-      <div class="focus-grid">
-
-        <div class="focus-card reveal">
-          <div class="focus-num">01 / SaaS</div>
-          <h4><span class="focus-dot"></span>B2B SaaS Products</h4>
-          <p>Building subscription-based tools for small businesses, freelancers, and SMEs — with a focus on fast onboarding, clear value, and retention-first design.</p>
-        </div>
-
-        <div class="focus-card reveal">
-          <div class="focus-num">02 / AUTOMATION</div>
-          <h4><span class="focus-dot"></span>Compliance Automation</h4>
-          <p>Turning tedious regulatory and compliance workflows into automated, error-free software — especially in India's complex GST, labour, and filing landscape.</p>
-        </div>
-
-        <div class="focus-card reveal">
-          <div class="focus-num">03 / AI</div>
-          <h4><span class="focus-dot"></span>AI-Enabled Software</h4>
-          <p>Embedding LLMs and intelligent automation into real business workflows — not AI for AI's sake, but products where intelligence is the moat.</p>
-        </div>
-
-        <div class="focus-card reveal">
-          <div class="focus-num">04 / FINTECH</div>
-          <h4><span class="focus-dot"></span>Fintech & Payments</h4>
-          <p>Accounting tools, invoicing, expense management, and financial workflows for India's 63M+ small businesses who are still running on WhatsApp and Excel.</p>
-        </div>
-
-        <div class="focus-card reveal">
-          <div class="focus-num">05 / GOVTECH</div>
-          <h4><span class="focus-dot"></span>Government Tech</h4>
-          <p>Bridging the gap between citizens, small businesses, and India's complex government processes — creating clarity, speed, and access for the underserved.</p>
-        </div>
-
-        <div class="focus-card reveal">
-          <div class="focus-num">06 / SEGMENTS</div>
-          <h4><span class="focus-dot"></span>Freelancers & Job Seekers</h4>
-          <p>Products for independent professionals navigating India's gig economy — from portfolio tools and contracts to job prep platforms with real traction metrics.</p>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- PROJECTS -->
-  <section id="projects">
-    <div class="section-inner">
-      <div class="section-label">Selected Work</div>
-      <h2 class="section-title">Things I've <em>built</em> & shipped.</h2>
-      <div class="projects-list">
-
-        <div class="project-row reveal">
-          <span class="project-idx">01</span>
-          <div class="project-info">
-            <h4>Enterprise Invoice & GST Platform</h4>
-            <p>Full-stack billing and compliance system for SMEs — automated GST calculations, e-invoice generation, multi-branch support, and role-based access.</p>
-          </div>
-          <div class="project-badges">
-            <span class="badge badge-cyan">Spring Boot</span>
-            <span class="badge badge-cyan">PostgreSQL</span>
-            <span class="badge badge-orange">Fintech</span>
-          </div>
-        </div>
-
-        <div class="project-row reveal">
-          <span class="project-idx">02</span>
-          <div class="project-info">
-            <h4>Multi-tenant SaaS API Gateway</h4>
-            <p>Scalable REST API backend with tenant isolation, subscription tier enforcement, rate limiting, and audit logging for a B2B product platform.</p>
-          </div>
-          <div class="project-badges">
-            <span class="badge badge-cyan">REST API</span>
-            <span class="badge badge-cyan">Microservices</span>
-            <span class="badge badge-green">SaaS</span>
-          </div>
-        </div>
-
-        <div class="project-row reveal">
-          <span class="project-idx">03</span>
-          <div class="project-info">
-            <h4>Compliance Workflow Automation Tool</h4>
-            <p>MVP for automating repetitive compliance tasks — deadline tracking, document checklists, status dashboards — for CA firms and their SME clients.</p>
-          </div>
-          <div class="project-badges">
-            <span class="badge badge-violet">Compliance</span>
-            <span class="badge badge-cyan">Java</span>
-            <span class="badge badge-orange">MVP</span>
-          </div>
-        </div>
-
-        <div class="project-row reveal">
-          <span class="project-idx">04</span>
-          <div class="project-info">
-            <h4>AI-Powered Job Prep Platform (Concept)</h4>
-            <p>Research-validated SaaS for Indian job seekers — personalized interview prep, resume analysis, and mock tests using LLM-backed assessment engine.</p>
-          </div>
-          <div class="project-badges">
-            <span class="badge badge-violet">AI / LLM</span>
-            <span class="badge badge-green">Validated</span>
-            <span class="badge badge-orange">In Progress</span>
-          </div>
-        </div>
-
-        <div class="project-row reveal">
-          <span class="project-idx">05</span>
-          <div class="project-info">
-            <h4>Freelancer Contract & Payment Manager</h4>
-            <p>Lightweight tool for Indian freelancers to manage contracts, raise invoices with TDS handling, track payment status, and send automated reminders.</p>
-          </div>
-          <div class="project-badges">
-            <span class="badge badge-violet">Freelance</span>
-            <span class="badge badge-cyan">Spring Boot</span>
-            <span class="badge badge-green">SaaS</span>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- VISION -->
-  <section id="vision">
-    <div class="section-inner">
-      <div class="vision-layout">
-        <div class="vision-left reveal">
-          <div class="section-label">The Philosophy</div>
-          <h2>Code is <em>the vehicle.</em><br>Value is the destination.</h2>
-          <p>I don't build features — I solve problems people are actively willing to pay to escape. Every line of code I write is in service of a user who shouldn't have to deal with the complexity I'm absorbing for them.</p>
-          <p>My edge is sitting at the intersection: I can spot a market opportunity AND build the product myself, without waiting for permission or co-founders.</p>
-        </div>
-        <div class="vision-pillars reveal">
-          <div class="pillar">
-            <div class="pillar-icon">🎯</div>
-            <div class="pillar-text">
-              <h5>Validate before building</h5>
-              <p>Research real pain, find paying signals, then write the first line of code. Never the reverse.</p>
-            </div>
-          </div>
-          <div class="pillar">
-            <div class="pillar-icon">⚡</div>
-            <div class="pillar-text">
-              <h5>Ship fast, learn faster</h5>
-              <p>An MVP in 6 weeks beats a perfect product in 6 months. Users teach you what matters.</p>
-            </div>
-          </div>
-          <div class="pillar">
-            <div class="pillar-icon">🏗️</div>
-            <div class="pillar-text">
-              <h5>Build for scale from day one</h5>
-              <p>Architecture decisions made at 100 users haunt you at 100,000. Design with that in mind.</p>
-            </div>
-          </div>
-          <div class="pillar">
-            <div class="pillar-icon">🇮🇳</div>
-            <div class="pillar-text">
-              <h5>India is the opportunity</h5>
-              <p>63M SMEs, 500M+ workers, complex compliance — enormous problems, massive under-served markets.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- STACK -->
-  <section id="stack">
-    <div class="section-inner">
-      <div class="section-label">Technical Depth</div>
-      <h2 class="section-title">The <em>stack</em> behind the work.</h2>
-      <div class="stack-groups">
-
-        <div class="stack-group reveal">
-          <div class="stack-group-title">// Backend Engineering</div>
-          <div class="skill-bars">
-            <div class="skill-bar-item">
-              <div class="skill-bar-label"><span class="skill-name">Java & Spring Boot</span><span class="skill-pct">96%</span></div>
-              <div class="skill-track"><div class="skill-fill" data-width="0.96"></div></div>
-            </div>
-            <div class="skill-bar-item">
-              <div class="skill-bar-label"><span class="skill-name">REST API Design</span><span class="skill-pct">94%</span></div>
-              <div class="skill-track"><div class="skill-fill" data-width="0.94"></div></div>
-            </div>
-            <div class="skill-bar-item">
-              <div class="skill-bar-label"><span class="skill-name">PostgreSQL & DB Design</span><span class="skill-pct">90%</span></div>
-              <div class="skill-track"><div class="skill-fill" data-width="0.90"></div></div>
-            </div>
-            <div class="skill-bar-item">
-              <div class="skill-bar-label"><span class="skill-name">Microservices Architecture</span><span class="skill-pct">85%</span></div>
-              <div class="skill-track"><div class="skill-fill" data-width="0.85"></div></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="stack-group reveal">
-          <div class="stack-group-title">// Product & Strategy</div>
-          <div class="skill-bars">
-            <div class="skill-bar-item">
-              <div class="skill-bar-label"><span class="skill-name">Market Research & Validation</span><span class="skill-pct">92%</span></div>
-              <div class="skill-track"><div class="skill-fill" data-width="0.92"></div></div>
-            </div>
-            <div class="skill-bar-item">
-              <div class="skill-bar-label"><span class="skill-name">SaaS Product Development</span><span class="skill-pct">88%</span></div>
-              <div class="skill-track"><div class="skill-fill" data-width="0.88"></div></div>
-            </div>
-            <div class="skill-bar-item">
-              <div class="skill-bar-label"><span class="skill-name">MVP Planning & Execution</span><span class="skill-pct">90%</span></div>
-              <div class="skill-track"><div class="skill-fill" data-width="0.90"></div></div>
-            </div>
-            <div class="skill-bar-item">
-              <div class="skill-bar-label"><span class="skill-name">AI-Enabled Product Strategy</span><span class="skill-pct">80%</span></div>
-              <div class="skill-track"><div class="skill-fill" data-width="0.80"></div></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="stack-group reveal">
-          <div class="stack-group-title">// Tools & Infrastructure</div>
-          <div class="skill-bars">
-            <div class="skill-bar-item">
-              <div class="skill-bar-label"><span class="skill-name">Git & CI/CD</span><span class="skill-pct">88%</span></div>
-              <div class="skill-track"><div class="skill-fill" data-width="0.88"></div></div>
-            </div>
-            <div class="skill-bar-item">
-              <div class="skill-bar-label"><span class="skill-name">Docker & Containerization</span><span class="skill-pct">78%</span></div>
-              <div class="skill-track"><div class="skill-fill" data-width="0.78"></div></div>
-            </div>
-            <div class="skill-bar-item">
-              <div class="skill-bar-label"><span class="skill-name">Cloud (AWS / GCP basics)</span><span class="skill-pct">72%</span></div>
-              <div class="skill-track"><div class="skill-fill" data-width="0.72"></div></div>
-            </div>
-            <div class="skill-bar-item">
-              <div class="skill-bar-label"><span class="skill-name">Redis & Caching</span><span class="skill-pct">80%</span></div>
-              <div class="skill-track"><div class="skill-fill" data-width="0.80"></div></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="stack-group reveal">
-          <div class="stack-group-title">// Domain Knowledge</div>
-          <div class="skill-bars">
-            <div class="skill-bar-item">
-              <div class="skill-bar-label"><span class="skill-name">India GST & Compliance</span><span class="skill-pct">82%</span></div>
-              <div class="skill-track"><div class="skill-fill" data-width="0.82"></div></div>
-            </div>
-            <div class="skill-bar-item">
-              <div class="skill-bar-label"><span class="skill-name">Fintech & Payment Systems</span><span class="skill-pct">78%</span></div>
-              <div class="skill-track"><div class="skill-fill" data-width="0.78"></div></div>
-            </div>
-            <div class="skill-bar-item">
-              <div class="skill-bar-label"><span class="skill-name">Enterprise App Architecture</span><span class="skill-pct">90%</span></div>
-              <div class="skill-track"><div class="skill-fill" data-width="0.90"></div></div>
-            </div>
-            <div class="skill-bar-item">
-              <div class="skill-bar-label"><span class="skill-name">B2B SaaS GTM Strategy</span><span class="skill-pct">75%</span></div>
-              <div class="skill-track"><div class="skill-fill" data-width="0.75"></div></div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTACT -->
-  <section id="contact">
-    <div class="section-inner">
-      <div class="contact-layout">
-        <div class="contact-left reveal">
-          <div class="section-label">Get In Touch</div>
-          <h2>Let's build something that matters.</h2>
-          <p>Whether you're looking for a senior backend engineer, want to collaborate on a product idea, or just want to talk about India's B2B SaaS opportunity — I'm genuinely interested.</p>
-          <div class="contact-links">
-            <a href="mailto:vivek@example.com" class="contact-link">
-              <span class="contact-link-icon">@</span>
-              <span>vivek@example.com</span>
-            </a>
-            <a href="https://linkedin.com/in/vivekkumar" class="contact-link" target="_blank">
-              <span class="contact-link-icon">in</span>
-              <span>linkedin.com/in/vivekkumar</span>
-            </a>
-            <a href="https://github.com/vivekkumar" class="contact-link" target="_blank">
-              <span class="contact-link-icon">gh</span>
-              <span>github.com/vivekkumar</span>
-            </a>
-            <a href="https://twitter.com/vivekkumar" class="contact-link" target="_blank">
-              <span class="contact-link-icon">𝕏</span>
-              <span>@vivekkumar</span>
-            </a>
-          </div>
-        </div>
-        <div class="contact-form-note reveal">
-          <h4>Open to conversations about:</h4>
-          <p>I'm selective about what I take on — and deeply committed when I do. Here's what genuinely excites me right now.</p>
-          <div class="interests-list">
-            <span class="tag tag-cyan">Senior Backend Roles</span>
-            <span class="tag tag-cyan">SaaS Co-building</span>
-            <span class="tag tag-violet">AI Product Ideas</span>
-            <span class="tag tag-violet">India Market Plays</span>
-            <span class="tag tag-cyan">Compliance Tech</span>
-            <span class="tag tag-violet">Fintech Projects</span>
-            <span class="tag tag-cyan">Technical Consulting</span>
-            <span class="tag tag-violet">Startup Advising</span>
-            <span class="tag tag-cyan">GovTech Opportunities</span>
-            <span class="tag tag-violet">Freelancer Tools</span>
-          </div>
-          <br>
-          <a href="mailto:vivek@example.com" class="btn-primary" style="display:inline-block; margin-top:8px;">Send a Message →</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-</main>
-
-<footer>
-  <div class="footer-left">© 2025 Vivek Kumar — Built with precision, shipped with purpose.</div>
-  <div class="footer-right">
-    <a href="#hero">Back to top ↑</a>
-    <a href="mailto:vivek@example.com">Email</a>
-    <a href="https://linkedin.com/in/vivekkumar" target="_blank">LinkedIn</a>
-  </div>
-</footer>
-
-<script>
-  // ── CANVAS CONSTELLATION BACKGROUND ──
-  const canvas = document.getElementById('canvas-bg');
-  const ctx = canvas.getContext('2d');
-  let nodes = [];
-  const NODE_COUNT = 60;
-
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-
-  function initNodes() {
-    nodes = [];
-    for (let i = 0; i < NODE_COUNT; i++) {
-      nodes.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        r: Math.random() * 1.5 + 0.5
-      });
-    }
-  }
-
-  function drawFrame() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let i = 0; i < nodes.length; i++) {
-      const a = nodes[i];
-      a.x += a.vx;
-      a.y += a.vy;
-      if (a.x < 0 || a.x > canvas.width) a.vx *= -1;
-      if (a.y < 0 || a.y > canvas.height) a.vy *= -1;
-      for (let j = i + 1; j < nodes.length; j++) {
-        const b = nodes[j];
-        const dx = a.x - b.x, dy = a.y - b.y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist < 140) {
-          const alpha = (1 - dist / 140) * 0.4;
-          ctx.beginPath();
-          ctx.strokeStyle = `rgba(0, 217, 255, ${alpha})`;
-          ctx.lineWidth = 0.5;
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.stroke();
-        }
-      }
-      ctx.beginPath();
-      ctx.fillStyle = `rgba(0, 217, 255, 0.6)`;
-      ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    requestAnimationFrame(drawFrame);
-  }
-
-  resize();
-  initNodes();
-  drawFrame();
-  window.addEventListener('resize', () => { resize(); initNodes(); });
-
-  // ── TYPEWRITER ──
-  const phrases = [
-    'Backend Engineer · SaaS Builder · India-first',
-    'Java + Spring Boot → scalable systems',
-    'Market Research → product that sells',
-    'Turning pain points into SaaS revenue',
-  ];
-  let pi = 0, ci = 0, deleting = false;
-  const typedEl = document.getElementById('typed-text');
-
-  function typeLoop() {
-    const phrase = phrases[pi];
-    if (!deleting) {
-      typedEl.textContent = phrase.slice(0, ci + 1);
-      ci++;
-      if (ci === phrase.length) { deleting = true; setTimeout(typeLoop, 2200); return; }
-      setTimeout(typeLoop, 55);
-    } else {
-      typedEl.textContent = phrase.slice(0, ci - 1);
-      ci--;
-      if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; setTimeout(typeLoop, 400); return; }
-      setTimeout(typeLoop, 28);
-    }
-  }
-  typeLoop();
-
-  // ── SCROLL REVEAL ──
-  const revealEls = document.querySelectorAll('.reveal');
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        obs.unobserve(e.target);
-      }
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VIVEK</title>
+    <link rel="shortcut icon" href="images/icon.png" type="image/png">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
+    function hideURLbar(){ window.scrollTo(0,1); } </script>
+
+    <!-- //for-mobile-apps -->
+    <link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="css/portfolio_new.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+    <link rel="shortcut icon" href="images/icon.png" type="image/png">
+    <!-- gallery -->
+    <link type="text/css" rel="stylesheet" href="css/cm-overlay.css" />
+    <!-- //gallery -->
+    
+        <!-- font-awesome icons -->
+    <link href="css/font-awesome.css" rel="stylesheet">
+    <!-- //font-awesome icons -->
+    <link href="https://fonts.googleapis.com/css?family=Gidugu|Open+Sans" rel="stylesheet">
+    
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+    <!--Styles & co-->
+    <link href='https://fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Bree+Serif' rel='stylesheet' type='text/css'>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script type="text/javascript">
+$(document).ready(function(){
+    $("w3ls_footer_grid_leftl").mouseenter(function(){
+        $(this).addClass("highlight");
     });
-  }, { threshold: 0.12 });
-  revealEls.forEach(el => obs.observe(el));
-
-  // ── SKILL BAR ANIMATIONS ──
-  const fillEls = document.querySelectorAll('.skill-fill');
-  const barObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        const fill = e.target;
-        const w = parseFloat(fill.getAttribute('data-width'));
-        fill.style.width = (w * 100) + '%';
-        setTimeout(() => fill.classList.add('animated'), 60);
-        barObs.unobserve(fill);
-      }
+    $("w3ls_footer_grid_leftl").mouseleave(function(){
+        $(this).removeClass("highlight");
     });
-  }, { threshold: 0.3 });
-  fillEls.forEach(el => {
-    el.style.width = '0%';
-    barObs.observe(el);
-  });
+});
+
+
 </script>
 
-</body>
+
+  </head>
+  <body>
+ 
+ <!--Navigation menu--> 
+  <nav class="navigation">
+	<div class="container">
+		<div class="dropdown">
+			<button type="button" class="navbar-toggle" data-toggle="dropdown"><span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> MENU</button>
+			<!-- <a data-toggle="dropdown" href="#">Dropdown trigger</a> -->
+			<ul class="dropdown-menu" id="navigation" role="menu">
+				<li><a href="#aboutMe">About me</a></li>
+				<li><a href="#work">Portfolio</a></li>
+                <li><a href="http:\\vivek.quora.com">blog</a></li>
+				<li><a href="#contact">Contacts</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</nav><!--end navigation-->
+  
+<header>
+    <div class="homepage-hero-module">
+    <div class="video-container">
+        <div class="filter"></div>
+        <!--...edited -->
+        <!--Left half of the  image-->
+      
+        <div id="leftHalf">
+  <div class="overlay"></div>
+    <div class="intro">
+        <h1 class="animated fadeInUp"><span style="color:#38a1d2 ">Vivek </span></h1>
+        <h2 class="animated fadeInUp">Engineer   |</h2>
+    </div>
+</div>
+<!--Right half of the  image -->
+<div id="rightHalf">
+    <div class="overlayBis"></div>
+    <div class="intro">
+        <h1 class="animated fadeInUp left"><span style="color:#FF4747"> Kumar</span></h1>
+        <h2 class="animated fadeInUp left">Designer</h2>
+    </div>
+</div>
+
+
+        <video autoplay loop class="fillWidth">
+
+            <source src="People Working in an Office   Website Background Video.mp4" type="video/mp4" />Your browser does not support the video tag. I suggest you upgrade your browser.
+              
+            <source src="People Working in an Office   Website Background Video.mp4" type="video/webm" />Your browser does not support the video tag. I suggest you upgrade your browser.
+        </video>
+        <div class="poster hidden">
+            <img src="People Working in an Office   Website Background Video.mp4" alt="">
+        </div>
+    </div>
+</div>
+    <!-- new navigation header -->
+    <div class="w3_navigation">
+        <div class="container">
+            <nav class="navbar navbar-default">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
+                    <nav class="cl-effect-1" id="cl-effect-1">
+                        <ul class="nav navbar-nav">
+                            <li class="active" ><a class="scroll" href="index.html">Home</a></li>
+                            <li><a href="#about" class="scroll hvr-bounce-to-bottom">About</a></li>
+                            <li><a href="#services" class="scroll hvr-bounce-to-bottom">Skills</a></li>
+                            <li><a href="#education" class="scroll hvr-bounce-to-bottom">Resume</a></li>
+                            <li><a href="#work" class="scroll hvr-bounce-to-bottom">Projects</a></li>
+                            <li><a href="#footer" class="scroll hvr-bounce-to-bottom">Contact</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <!-- /.navbar-collapse -->
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- //header new navigation -->
+  
+
+
+	<div id="scrollDown">
+		<a href="#aboutMe" id="button" class="page-scroll">
+			<i class="fa fa-angle-double-down"></i>
+		</a>
+	</div>
+<!--end hero image-->
+</header>
+
+    <!--Website content-->
+    <div class="site-inner">
+    
+    <!-- About section -->
+    <!-- about -->
+<div class="about" id="about">
+    <div class="container">
+        <h3 class="w3l_head">Who Am I</h3>
+        <p class="w3ls_head_para">few details about me</p>
+        <div class="w3l-grids-about">
+            <div class="col-md-5 w3ls-ab-right">
+                <div class="agile-about-right-img">
+                    <img src="images/viv.jpeg" alt="">
+                </div>
+            </div>
+            <div class="col-md-7 w3ls-agile-left">
+                <div class="w3ls-agile-left-info">
+                    <h4>Currrent Position</h4>
+                    <p>Computer Science Engineering, VI Semester</p>
+                </div>
+                <div class="w3ls-agile-left-info">
+                    <h4>Date of Birth</h4>
+                    <p>August 7, 1994</p>
+                </div>
+                <div class="w3ls-agile-left-info">
+                    <h4>Hometown</h4>
+                    <p>Sonebhadra, Uttar Pradesh</p>
+                </div>
+                <div class="w3ls-agile-left-info">
+                    <h4>Contact No</h4>
+                    <p>+91-8470906684</p>
+                </div>
+                <div class="w3ls-agile-left-info">
+                    <h4>Email Address</h4>
+                    <p><a href="mailto:kumarvivek2678@gmail.com">kumarvivek2678@gmail.com</a></p>
+                </div>
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+    </div>
+</div>
+<!-- //about-bottom -->
+
+    <section id="aboutMe">
+    	<div class="container">
+        	<div class="row">
+            	<div class="center-block text-center">
+            		<h2 class="sectionTitle pretty"><span>About me</span></h2>
+                </div>
+            </div>
+            <div class="row">
+            	<div class="col-md-5 introduction">
+                <h3 class="introTitle text-center" style="color:#FF4747">Who am I</h3>
+					<p align="justify" >Hello, I am an undergraduate student pursuing my Bachelor's Degree at Galgotias University, Gr.Noida, Uttar Pradesh.</br>
+                    I like listening to music, watching tv series and movies. I love reading fiction and write blogs from time to time. In addition to that, I am also active on social networking sites and love interacting with people and learn from their experiences.
+
+					<div class="containerIntro" style="margin-top:2em">
+						<h4 class="introSub">Course Undertaken:</h4> <p>Computer Science Engineering</p>
+					</div>
+
+					<div class="containerIntro">
+						<h4 class="introSub"> Current Position:</h4> <p> 3<sup>rd</sup> year Student</p>
+					</div>
+                    <div class="containerIntro">
+                        <h4 class="introSub"> Age:</h4> <p> 22 years</p>
+                    </div>
+                    <div class="containerIntro">
+                        <h4 class="introSub"> Home Town:</h4> <p> Sonebhadra (U.P)</p>
+                    </div>
+					<div class="containerIntro">
+						<h4 class="introSub">Hobbies:</h4>
+						 <p>Reading Wikipedia,Playing & Watching Cricket, 
+						 	<a href="http:\\vivek.quora.com">Blogging</a>, 
+						 	Watching TV Series.
+						 </p>
+					</div>
+                </div>
+                <div class="col-md-2 midimage">
+                    
+                    <img class="img-responsive hidden-sm" src="img/zine.jpeg" alt="">
+             		<img class="img-responsive hidden-sm" src="img/man.jpg" alt="">
+                    <img class="img-responsive hidden-sm" src="img/e=mc2.jpg" alt="">
+
+					<div class="overlays"></div>
+            	 </div>
+                <div class="col-md-5 introduction">
+                <h3 class="introTitle text-center" style="color:#38a1d2">What I do</h3>
+					<p align="justify" >
+						My academic interest includes Image Processing, Computer Programming, Machine Learning and Web Development.<br>
+						 I have worked on numerous interdisciplinary projects in fields like Domotics,Embedded systems,Computer Vision, Smart Energy, Mechatronics.</br>
+
+						 
+                         I am also interested in competitive programming and have a admirable hold on Data Structure and algorithms.
+						  For detailed info, check out my <a href="#work">portfolio</a>.
+
+					</p>
+					<div class="containerIntro" style="margin-top:2em">
+						<h4 class="introSub blue">Relevant Courses:</h4> <p>
+                        Data Structure and Algorithm</br>
+                        Object Oriented Programming in java</br>
+                        Computer Networks</br>
+                        Swing GUI Development</br>
+                        MySql Database</br>
+                        Web Development
+                    </p>
+					</div>
+					
+            </div>
+        </div>
+    </section><!--About section end-->
+	
+	<!-- Skills section -->
+	<section class="skills">
+		<div class="skills-content">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-4 col-md-4 col-sm-6 text-center">
+						<span class="fa-stack fa-lg">
+						  <i class="fa fa-circle fa-stack-2x"></i>
+						  <i class="fa fa-cog fa-spin fa-1x fa-fw"  style="color:#38a1d2"></i>
+						</span>
+						<h3>Database:</h3>
+						<p>Oracle 11g,</br>Mongo DB, MySql .
+                    </p>
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-6 text-center">
+						<span class="fa-stack fa-lg">
+						  <i class="fa fa-circle fa-stack-2x"></i>
+						  <i class="fa fa-code fa-stack-1x"  style="color:#38a1d2"></i>
+						</span>
+						<h3>Computer Languages</h3>
+						<p> 
+							C, Java (Core)</br> JQuery,<br> HTML, CSS, PHP,</br> Assembly Languages-8086.
+						</p>
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-6 text-center">
+						<span class="fa-stack fa-lg">
+						  <i class="fa fa-circle fa-stack-2x"></i>
+						  <i class="fa fa-camera fa-stack-1x"  style="color:#38a1d2"></i>
+						</span>
+						<h3>Packages:</h3>
+						<p>Adobe Dreamweaver,</br> Adobe Photoshop, After Effects </br>Android Studio, Microsoft office.
+					</div>
+				</div>
+			</div>
+        </div>
+    </section>
+    
+     
+    <!-- /education -->
+<div class="education" id="education">
+    <div class="col-md-6 education-w3l">
+        <h3 class="w3l_head three">More about me</h3>
+        <div class="education-agile-grids">
+            <div class="education-agile-w3l">
+                <div class="education-agile-w3l-year">
+                    <h4>RESUME</h4>
+                </div>
+                <div class="education-agile-w3l-info">
+                    <p>.<br/><a href="http://www.zine.co.in/" target="_blank">You can download the Resume from below.</a></p>
+			<a class="btn btn-primary" href="https://drive.google.com/open?id=1RKsjI5OOCjVDbO-XyjdiigFlkVjkByRk"><i class="fa fa-download"></i> Download Resume</a>
+
+
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="education-agile-w3l two">
+                <div class="education-agile-w3l-year">
+                    <h4>Strengths</h4>
+                </div>
+                <div class="education-agile-w3l-info">
+                    <p>Techno enthusiast, fast learner and a team player.<br/><a href="#work" class="scroll hvr-bounce-to-bottom">See my projects</a></p>
+
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="education-agile-w3l one">
+                <div class="education-agile-w3l-year">
+                    <h4>Hobbies</h4>
+                </div>
+                <div class="education-agile-w3l-info">
+                    <p>I like listening to music, watching TV Series and movies, Reading Tech articles, Sketching, playing football and computer games.</p>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="education-agile-w3l">
+                <div class="education-agile-w3l-year">
+                    <h4>Social Links</h4>
+                </div>
+                <div class="education-agile-w3l-info">
+                    <p>You can contact me anywhere on these social platforms.<a href="#footer"> Contact Me</a></p>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="col-md-6 skills">
+        <h3 class="w3l_head two">what i do</h3>
+        <p class="list-gds2">My interest includes Computer Programming, Image Processing, Artificial Intelligence, Machine Learning, Full-Stack Development and Robotics.
+            <br/><br/>I have also worked in various fields like Android App Development, Internet of Things, Domotics, Embedded Systems and Mechatronics.
+            <br/><br/>Good understanding of courses like Data Structure and Algorithms, Object Oriented Programming, Database Management, Computer Networks, Digital Signal Processing, Microprocessors and Control Systems.
+            <br/><br/>
+        </div>
+        <div class="clearfix"> </div>
+    </div>
+    <!-- /gallery-->
+
+
+
+
+    <!--Work section-->
+     <section id="work">
+    	<div class="container">
+        	<div class="row">
+            	<div class="center-block text-center">
+            		<h2 class="sectionTitle pretty"><span>My work</span></h2>
+                </div>
+            </div>
+		</div>
+        </br>
+            <div class="row">
+            <!-- Work tiles start here -->
+            
+			<div class="col-lg-3 col-md-3 col-sm-6 work">
+                       <div class="work-image"></div>
+						<div class="work-hover">
+                            <div class="work-hover-title">
+								<h3 href="https://vikovoila.github.io/Kwench-Challenge/">Social User Profile</h3>
+								<div class="link-inner">
+									<a href="https://vikovoila.github.io/Kwench-Challenge/" target="_blank"><div class="btn-hover"></div></a><!--Link to your work-->
+									<a href="https://vikovoila.github.io/Kwench-Challenge/" class="my-work" data-toggle="modal"><div class="btn-more"></div></a><!--Link to modal-->
+								</div>
+                            </div>
+                       </div>
+				<a href="https://vikovoila.github.io/Kwench-Challenge/"> <!-- new update on 6th jan 2020 -->
+                        <img src="images/Social USer Profile.png" class="img-responsive" alt="">
+            </div><!-- work tile end -->
+			<div class="col-lg-3 col-md-3 col-sm-6 work">
+                       <div class="work-image"></div>
+                        <div class="work-hover blue">
+                            <div class="work-hover-title">
+                                <h3>Tourism Web Service</h3>
+								<div class="link-inner">
+									<a href="#" target="_blank"><div class="btn-hover"></div></a><!--Link to your work-->
+									<a href="#workModal3" class="my-work" data-toggle="modal"><div class="btn-more"></div></a><!--Link to modal-->
+								</div>
+                            </div>
+                       </div>
+                        <img src="img/work/1small.jpg" class="img-responsive" alt="">
+            </div><!-- work tile end -->
+            <div class="col-lg-3 col-md-3 col-sm-6 work">
+                       <div class="work-image"></div>
+                        <div class="work-hover blue">
+                            <div class="work-hover-title">
+                                <h3>Summer Internship</h3>
+								<div class="link-inner">
+									<a href="https://goo.gl/irG9W1" target="_blank"><div class="btn-hover"></div></a><!--Link to your work-->
+									<a href="#workModal4" class="my-work" data-toggle="modal"><div class="btn-more"></div></a><!--Link to modal-->
+								</div>
+                            </div>
+                       </div>
+                        <img src="img/work/2small.jpg" class="img-responsive" alt="">
+            </div><!-- work tile end -->
+            
+            
+            
+            <div class="col-lg-3 col-md-3 col-sm-6 work">
+                       <div class="work-image"></div>
+                        <div class="work-hover">
+                            <div class="work-hover-title">
+                                <h3>Chat Application</h3>
+                                <div class="link-inner">
+                                    <a href="https://github.com/TechiesMU/document_scanner" target="_blank"><div class="btn-hover"></div></a><!--Link to your work-->
+                                    <a href="#workModal5" class="my-work" data-toggle="modal"><div class="btn-more"></div></a><!--Link to modal-->
+                                </div>
+                            </div>
+                       </div>
+                        <img src="img/work/7small.jpg" class="img-responsive" alt="">
+            </div><!-- work tile end -->
+            </div>
+            <div class="row">
+			<div class="col-lg-3 col-md-3 col-sm-6 work">
+                       <div class="work-image"></div>
+                        <div class="work-hover">
+                            <div class="work-hover-title">
+				    <h3><!--eless Domotics Assistance -->Working </h3>
+								<div class="link-inner">
+									<a href="https://github.com/TechiesMU/Wireless_home_automation" target="_blank"><div class="btn-hover"></div></a><!--Link to your work-->
+									<a href="#workModal6" class="my-work" data-toggle="modal"><div class="btn-more"></div></a><!--Link to modal-->
+								</div>
+                            </div>
+                       </div>
+                        <img src="img/work/8small.jpg" class="img-responsive" alt="">
+            </div><!-- work tile end -->
+            <div class="col-lg-3 col-md-3 col-sm-6 work">
+                       <div class="work-image"></div>
+                        <div class="work-hover blue">
+                            <div class="work-hover-title">
+				    <h3><!-- Animatronic Hand --> Space </h3>
+								<div class="link-inner">
+									<a href="#" target="_blank"><div class="btn-hover"></div></a><!--Link to your work-->
+									<a href="#workModal7" class="my-work" data-toggle="modal"><div class="btn-more"></div></a><!--Link to modal-->
+								</div>
+                            </div>
+                       </div>
+                        <img src="img/work/3small.jpg" class="img-responsive" alt="">
+            </div><!-- work tile end -->
+            <div class="col-lg-3 col-md-3 col-sm-6 work">
+                       <div class="work-image"></div>
+                        <div class="work-hover blue">
+                            <div class="work-hover-title">
+                                <h3>Smart Eco-Light System</h3>
+								<div class="link-inner">
+									<a href="#" target="_blank"><div class="btn-hover"></div></a><!--Link to your work-->
+									<a href="#workModal8" class="my-work" data-toggle="modal"><div class="btn-more"></div></a><!--Link to modal-->
+								</div>
+                            </div>
+                       </div>
+                        <img src="img/work/4small.jpg" class="img-responsive" alt="">
+            </div><!-- work tile end -->
+            <div class="col-lg-3 col-md-3 col-sm-6 work">
+                       <div class="work-image"></div>
+                        <div class="work-hover blue">
+                            <div class="work-hover-title">
+                                <h3>Mini-Projects</h3>
+                                <div class="link-inner">
+                                    <a href="#" target="_blank"><div class="btn-hover"></div></a><!--Link to your work-->
+                                    <a href="#workModal1" class="my-work" data-toggle="modal"><div class="btn-more"></div></a><!--Link to modal-->
+                                </div>
+                            </div>
+                       </div>
+                        <img src="img/work/5small.jpg" class="img-responsive" alt="">
+            </div>
+            </div>
+    </section>
+	
+    
+
+	<!--Quote section-->
+    <section class="quote">
+    <div class="quote-content">
+					<p>In the last three years, my life has completely changed.<br> I think I am very lucky to have discovered my true talents. I truly believe in the fact that </br>"Hard work puts you where good luck can find you".</p>
+                    </div>
+    </section><!--Quote section end-->
+	
+	
+
+    <!-- Portfolio Modal 2 -->
+   <div class="portfolio-modal modal fade" id="workModal2" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="close-modal" data-dismiss="modal">
+				</div>
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-6 col-md-6">
+							<div class="modal-body">
+							<img class="img-responsive center-block" src="img/work/6.jpg" alt="your project">
+							</div>
+						</div>
+						<div class="col-lg-6 col-md-6">
+							<div class="modal-body">
+							<h2 class="red">Human Computer Interface</h2>
+							<p class="item-intro text-muted">My dream project(ongoing)</p>
+							<p>This project is in very early stage but has the potential to produce some fascinating results in the field of web development.
+                            </br>It is a website based on Hand Gesture Recognition as a part of Human Computer Interface. The vision of this project is to enable a person to navigate through the website Up, Down, Left and Right using the swipe of your hand. This Project's web-development part is under construction. </p>
+							<span class="btn-launch-red"><a href="#" title="Launch website" target="_blank"><i class="fa fa-share-square-o"></i> Launch</a></span> 
+							<span class="btn-close-red" data-dismiss="modal"><i class="fa fa-times"></i> Close</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- Portfolio Modal 3 -->
+    <div class="portfolio-modal modal fade" id="workModal3" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="close-modal" data-dismiss="modal">
+				</div>
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-6 col-md-6">
+							<div class="modal-body">
+							<img class="img-responsive center-block" src="img/work/1.jpg" alt="your project">
+							</div>
+						</div>
+						<div class="col-lg-6 col-md-6">
+							<div class="modal-body">
+							<h2 class="blue">Human Gait Analysis</h2>
+							<p class="item-intro text-muted">Photo credits: <a href="http://www.ece.cmu.edu/~ece549/spring16/team16/website/" target="_blank">CMU</a></p>
+							<p>
+                                <h4>Keywords: OpenCV, Python, Image processing, Machine learning</h4><br/>
+                                A publishable research oriented project on "a person's manner of walking" i.e its gait analysis, useful in the field of Advanced Security, Fitness and Medicinal Advancement.</br>
+
+                                It includes realization of a person's unique Gait signature  and generating optimized algorithms to extract useful Region of Interest from an image to detect its contour and to calculate its Gait parameter by processing a video markerlessly.
+							</p>
+							<span class="btn-launch-blue"><a href="#" title="Launch website" target="_blank"><i class="fa fa-share-square-o"></i> Launch</a></span> 
+							<span class="btn-close-blue" data-dismiss="modal"><i class="fa fa-times"></i> Close</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- Portfolio Modal 4 -->
+    <div class="portfolio-modal modal fade" id="workModal4" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="close-modal" data-dismiss="modal">
+				</div>
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-6 col-md-6">
+							<div class="modal-body">
+							<img class="img-responsive center-block" src="img/work/2.jpg" alt="your project">
+							</div>
+						</div>
+						<div class="col-lg-6 col-md-6">
+							<div class="modal-body">
+							<h2 class="blue">Summer Research Internship</h2>
+							<p class="item-intro text-muted">Location: <a href="http://www.iitg.ac.in" target="_blank">Indian Institute of Technology, Guwahati</a></p>
+							<p>
+                               <h4>Keywords: Matlab, Simulink, Power System, Algorithms</h4>
+                            Modeling of distribution network and its electromagnetic transient and steady state analysis using Forward-Backward Iterative Technique. This analysis is carried out on a 6-Bus RDN of the Jail station, Guwahati city and a Sample 9-Bus RDN. </br>
+                                A generalized code was generated to carry forward the load flow analysis and electromagnetic transient analysis for the distribution network. </p>
+							<span class="btn-launch-blue"><a href="https://goo.gl/irG9W1" title="Launch website" target="_blank"><i class="fa fa-share-square-o"></i> Launch</a></span> 
+							<span class="btn-close-blue" data-dismiss="modal"><i class="fa fa-times"></i> Close</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- Portfolio Modal 5 -->
+   <div class="portfolio-modal modal fade" id="workModal5" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="close-modal" data-dismiss="modal">
+				</div>
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-6 col-md-6">
+							<div class="modal-body">
+							<img class="img-responsive center-block" src="img/work/7.jpg" alt="your project">
+							</div>
+						</div>
+						<div class="col-lg-6 col-md-6">
+							<div class="modal-body">
+							<h2 class="red">Document Scanning Application</h2>
+							<p class="item-intro text-muted">A python based script</p>
+							<p><h4>Keywords: Python, OpenCV, Image Processing</h4>A python based script that takes an image and convert them into a document format. It was built using Open CV and python by applying standard image processing technique.</p>
+							<span class="btn-launch-red"><a href="https://github.com/TechiesMU/document_scanner" title="Launch website" target="_blank"><i class="fa fa-share-square-o"></i> Launch</a></span> 
+							<span class="btn-close-red" data-dismiss="modal"><i class="fa fa-times"></i> Close</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- Portfolio Modal 6 -->
+    <div class="portfolio-modal modal fade" id="workModal6" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="close-modal" data-dismiss="modal">
+				</div>
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-6 col-md-6">
+							<div class="modal-body">
+							<img class="img-responsive center-block" src="img/work/8.jpg" alt="your project">
+							</div>
+						</div>
+						<div class="col-lg-6 col-md-6">
+							<div class="modal-body">
+							<h2 class="red">Wireless Domotics Assistance</h2>
+							<p class="item-intro text-muted">Home automation prototype</p>
+							<p><h4>Keywords:C/C++, Arduino, Electronics</h4>A device developed to control your home remotely. In this project, we can wirelessly control your DC/AC devices even if you are not there. Our first prototype was equipped enough to control five devices which includes three DC low voltage device, one high voltage DC device and one AC device. </p>
+							<span class="btn-launch-red"><a href="https://github.com/TechiesMU/Wireless_home_automation" title="Launch website" target="_blank"><i class="fa fa-share-square-o"></i> Launch</a></span> 
+							<span class="btn-close-red" data-dismiss="modal"><i class="fa fa-times"></i> Close</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Portfolio Modal 7 -->
+    <div class="portfolio-modal modal fade" id="workModal7" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="close-modal" data-dismiss="modal">
+				</div>
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-6 col-md-6">
+							<div class="modal-body">
+							<img class="img-responsive center-block" src="img/work/3.jpg" alt="your project">
+							</div>
+						</div>
+						<div class="col-lg-6 col-md-6">
+							<div class="modal-body">
+							<h2 class="blue">Animatronic Hand</h2>
+							<p class="item-intro text-muted">Photo credits: <a href="https://www.dreamstime.com/stock-illustration-white-robot-arm-hand-ok-gesture-success-concept-d-render-illustration-image78083663" target="_blank">Dreamstime</a></p>
+							<p><h4>Keywords:C/C++, Arduino, Electronics, Mechatronics</h4>A prototype model developed to trigger the hand response toward the human hand action. It was developed to imitate the human hand gestures. This project has multi-disciplinary application in various fields of work and has the potential to replace work force and improve efficiency and reliability. </p>
+							<span class="btn-launch-blue"><a href="#" title="Launch website" target="_blank"><i class="fa fa-share-square-o"></i> Launch</a></span> 
+							<span class="btn-close-blue" data-dismiss="modal"><i class="fa fa-times"></i> Close</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Portfolio Modal 8 -->
+    <div class="portfolio-modal modal fade" id="workModal8" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="close-modal" data-dismiss="modal">
+				</div>
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-6 col-md-6">
+							<div class="modal-body">
+							<img class="img-responsive center-block" src="img/work/4.jpg" alt="your project">
+							</div>
+						</div>
+						<div class="col-lg-6 col-md-6">
+							<div class="modal-body">
+							<h2 class="blue">Smart Eco-Light System</h2>
+							<p class="item-intro text-muted">Photo credits: <a href="https://www.pexels.com/photo/bright-bulb-bulbs-close-264943/" target="_blank">Pixabay</a></p>
+							<p><h4>Keywords:C/C++, Arduino, Electronics, Smart Energy</h4>A prototype developed to use the energy efficiently and judicially, as a part of Smart Energy System. It was able to control the lights depending upon the occupancy in the room and well as the intensity of light in the room.</p>
+							<span class="btn-launch-blue"><a href="#" title="Launch website" target="_blank"><i class="fa fa-share-square-o"></i> Launch</a></span> 
+							<span class="btn-close-blue" data-dismiss="modal"><i class="fa fa-times"></i> Close</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+    <!-- Portfolio Modal 1 -->
+    <div class="portfolio-modal modal fade" id="workModal1" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="close-modal" data-dismiss="modal">
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6">
+                            <div class="modal-body">
+                            <img class="img-responsive center-block" src="img/work/5small.jpg" alt="your project">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="modal-body">
+                            <h2 class="blue">Mini-Projects</h2>
+                            <p class="item-intro text-muted">Photo credits: <a href="http://www.circuitstoday.com/wp-content/uploads/2011/11/Mini-Projects.png" target="_blank">Circuitstoday</a></p>
+                            <p>Various robotics mini-projects like line followers, obstacle avoider and Robot based on Grabbing and Shooting Mechanism while dealing with heavy loads.</p>
+                            <span class="btn-launch-blue"><a href="#" title="Launch website" target="_blank"><i class="fa fa-share-square-o"></i> Launch</a></span> 
+                            <span class="btn-close-blue" data-dismiss="modal"><i class="fa fa-times"></i> Close</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	
+    <!-- footer -->
+    <div class="w3l_footer" id="footer">
+        <div class="container">
+
+            <div class="w3ls_footer_grids">
+
+                <div class="w3ls_footer_grid">
+                    <div class="col-md-4 w3ls_footer_grid_left">
+                        <div class="w3ls_footer_grid_leftl">
+                            <i class="fa fa-map-marker fa-2x" aria-hidden="true"></i>
+                        </div>
+                        <div class="w3ls_footer_grid_leftr">
+                            <h4>Locate me</h4>
+                            <p>GALGOTIAS UNIVERSITY, Yamuna Expressway, Gr. Noida,
+                              Uttar Pradesh 201306</p>
+                        </div>
+                        <div class="clearfix"> </div>
+                    </div>
+                    <div class="col-md-4 w3ls_footer_grid_left">
+                        <div class="w3ls_footer_grid_leftl">
+                            <i class="fa fa-envelope fa-2x" aria-hidden="true"></i>
+                        </div>
+                        <div class="w3ls_footer_grid_leftr">
+                            <h4>Email Me</h4>
+                            <a href="mailto:kumarvivek2678@gmail.com">kumarvivek2678@gmail.com</a><br>
+                            <a href="mailto:vivek.kumar1@galgotiasuniversity.edu.in">vivek.kumar1@galgotiasuniversity.edu.in</a>
+                        </div>
+                        <div class="clearfix"> </div>
+                    </div>
+                    <div class="col-md-4 w3ls_footer_grid_left">
+                        <div class="w3ls_footer_grid_leftl">
+                            <i class="fa fa-phone fa-2x" aria-hidden="true"></i>
+                        </div>
+                        <div class="w3ls_footer_grid_leftr">
+                            <h4>Call Me</h4>
+                            <p>+91-8470906684</p>
+                        </div>
+                        <div class="clearfix"> </div>
+                    </div>
+                    <div class="clearfix"> </div>
+                </div>
+            </div>
+        </div>
+        <div class="w3l_footer_pos">
+            <ul class="top-links" align="center">
+                <li><a href="https://facebook.com/" target="_blank"><i class="fa fa-facebook-official fa-2x"></i></a></li>
+                <li><a href="https://in.linkedin.com/in/vivek-kumar-55a11b173" target="_blank"><i class="fa fa-linkedin fa-2x"></i></a></li>
+                <li><a href="https://github.com/VikoVoila" target="_blank"><i class="fa fa-github fa-2x"></i></a></li>
+                <li><a href="https://quora.com/Vivek-Kumar-2638" target="_blank"><i class="fa fa-quora fa-2x"></i></a></li>
+                <li><a href="https://instagram.com/VikoVoila" target="_blank"><i class="fa fa-instagram fa-2x"></i></a></li>
+            </ul>
+        </div>
+        <div class="w3l_footer_pos">
+            <p>© 2017 All Rights Reserved | Vivek Kumar</p>
+        </div>
+    </div>
+    <!-- //footer -->
+
+
+    </div>
+
+
+
+    
+
+    <!-- jQuery, yo! -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Bootstrap and js stuff -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+	<script type='text/javascript' src="js/SmoothScroll.js"></script>
+	<script src="js/rubino.js"></script>
+	<script src="js/jqBootstrapValidation.js"></script>
+	<script src="js/contactform.js"></script>
+	<script src="js/video.js"></script>
+  </body>
 </html>
